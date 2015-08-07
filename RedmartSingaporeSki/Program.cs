@@ -19,45 +19,50 @@ namespace RedmartSingaporeSki
             var pathFinder = new FindPathDownward();
             var flattenPath = pathFinder.Find(map);
 
-            Print(flattenPath);
+            var availableLongestPaths = CompareAndGetLongest(flattenPath);
+            var answer = GetSteepest(availableLongestPaths);
+
+            var result = GenerateReport(availableLongestPaths, answer);
+
+            File.WriteAllText("result.txt", result.ToString());
+            Console.WriteLine(result.ToString());
 
             Console.ReadKey();
         }
 
-        private static void Print(IEnumerable<IList<int>> flattenPath)
+        private static StringBuilder GenerateReport(IList<Summarize> availableLongestPaths, Summarize answer)
         {
             var result = new StringBuilder();
+            result.AppendLine("Available Path:");
+            result.AppendLine("===============");
+            foreach (var d in availableLongestPaths)
+            {
+                result.AppendLine(d.ToString());
+            }
+            result.AppendLine("===============");
+            result.AppendLine(string.Format("Answer: {0}", answer));
+            return result;
+        }
 
+        private static Summarize GetSteepest(IList<Summarize> availableLongestPaths)
+        {
+            var maxSteep = availableLongestPaths.Max(x => x.Steep);
+            var answer = availableLongestPaths.First(x => x.Steep == maxSteep);
+            return answer;
+        }
+
+        private static IList<Summarize> CompareAndGetLongest(IEnumerable<IList<int>> flattenPath)
+        {
             var maxLength = flattenPath.Max(x => x.Count);
 
-            var sum = new List<Summarize>();
-
-            foreach (var f in flattenPath.Where(x => x.Count == maxLength))
-            {
-                var steep = f.First() - f.Last();
-                var path = string.Join(" > ", f.ToArray());
-                var length = f.Count;
-
-                var message = string.Format(SUM_FORMAT,
-                    length, steep, path);
-
-                result.AppendLine(message);
-
-                sum.Add(new Summarize
+            return (from f in flattenPath.Where(x => x.Count == maxLength)
+                let steep = (int) (f.First() - f.Last())
+                let path = string.Join(" > ", f.ToArray())
+                let length = f.Count
+                select new Summarize
                 {
-                    Length = length,
-                    Steep = steep,
-                    Path = path
-                });
-            }
-
-            var maxSteep = sum.Max(x => x.Steep);
-            var answer = sum.First(x => x.Steep == maxSteep);
-            result.AppendLine(string.Format("Answer: {0}", answer));
-
-            File.WriteAllText("result.txt", result.ToString());
-
-            Console.WriteLine(result.ToString());
+                    Length = length, Steep = steep, Path = path
+                }).ToList();
         }
 
         private static Map ReadMap(string fileName)
