@@ -13,7 +13,7 @@ namespace RedmartSingaporeSki.Models
 
         public Step Step { get; set; }
         
-        public Tile[] GoSideOrDownward()
+        public Tile[] GetDownwardTiles()
         {
             var result = new List<Tile>();
 

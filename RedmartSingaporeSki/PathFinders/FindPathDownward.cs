@@ -32,7 +32,7 @@ namespace RedmartSingaporeSki.PathFinders
             var newPath = new List<int>(previousPath) {currentTile.Elevation};
             flattenPath.Add(newPath);
 
-            var otherTiles = currentTile.GoSideOrDownward();
+            var otherTiles = currentTile.GetDownwardTiles();
 
             foreach (var otherTile in otherTiles)
             {

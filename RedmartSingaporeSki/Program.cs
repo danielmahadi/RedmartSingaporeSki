@@ -10,8 +10,6 @@ namespace RedmartSingaporeSki
 {
     internal class Program
     {
-        private static string SUM_FORMAT = "Length: {0}, Steep: {1}, Path: {2}";
-
         private static void Main(string[] args)
         {
             var map = ReadMap("map.txt");
@@ -104,6 +102,7 @@ namespace RedmartSingaporeSki
 
             public override string ToString()
             {
+                const string SUM_FORMAT = "Length: {0}, Steep: {1}, Path: {2}";
                 return string.Format(SUM_FORMAT, Length, Steep, Path);
             }
         }
